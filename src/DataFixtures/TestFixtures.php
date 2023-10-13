@@ -8,6 +8,8 @@ use App\Entity\User;
 use App\Entity\Genre;
 use App\Entity\Livre;
 use App\Entity\Auteur;
+use App\Entity\Emprunteur;
+use App\Entity\Emprunt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -38,6 +40,8 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         $this->loadAuteurs();
         $this->loadGenres();
         $this->loadLivres();
+        $this->loadEmprunteurs();
+        $this->loadEmprunts();
     }
 
     public function loadAuteurs(): void
@@ -222,6 +226,118 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $dd = $livre;
 
             $this->manager->persist($livre);
+        }
+        $this->manager->flush();
+    }
+
+    public function loadEmprunteurs(): void
+    {
+        $datas = [
+            [
+                'email' => 'foo.foo@exemple.com',
+                'roles' => ['ROLE_USER'],
+                'password' => '123',
+                'enabled' => true,
+
+                'nom' => 'foo',
+                'prenom' => 'foo',
+                'tel' => '123456789'
+
+            ],
+            [
+                'email' => 'bar.bar@exemple.com',
+                'roles' => ['ROLE_USER'],
+                'password' => '123',
+                'enabled' => true,
+
+                'nom' => 'bar',
+                'prenom' => 'bar',
+                'tel' => '123456789'
+
+            ],
+            [
+                'email' => 'baz.baz@exemple.com',
+                'roles' => ['ROLE_USER'],
+                'password' => '123',
+                'enabled' => true,
+
+                'nom' => 'baz',
+                'prenom' => 'baz',
+                'tel' => '123456789'
+
+            ],
+
+
+        ];
+
+
+        foreach ($datas as $data) {
+            $user = new User();
+            $user->setEmail($data['email']);
+            $password = $this->hasher->hashPassword($user, $data['password']);
+            $user->setPassword($password);
+            $user->setRoles($data['roles']);
+            $user->setEnabled($data['enabled']);
+
+            $this->manager->persist($user);
+
+            $emprunteur = new Emprunteur();
+            $emprunteur->setNom($data['nom']);
+            $emprunteur->setPrenom($data['prenom']);
+            $emprunteur->setTel($data['tel']);
+
+            $emprunteur->setUser($user);
+
+            $this->manager->persist($emprunteur);
+        }
+        $this->manager->flush();
+    }
+
+    public function loadEmprunts(): void
+    {
+        $repositoryLivre = $this->manager->getRepository(Livre::class);
+        $livres = $repositoryLivre->findAll();
+        $livre1 = $repositoryLivre->find(1);
+        $livre2 = $repositoryLivre->find(2);
+        $livre3 = $repositoryLivre->find(3);
+
+        $repositoryEmprunteur = $this->manager->getRepository(Emprunteur::class);
+        $emprunteurs = $repositoryEmprunteur->findAll();
+        $emprunteur1 = $repositoryEmprunteur->find(1);
+        $emprunteur2 = $repositoryEmprunteur->find(2);
+        $emprunteur3 = $repositoryEmprunteur->find(3);
+
+
+
+        $datas = [
+            [
+                'dateEmprunt' => new DateTime('2023-02-03 16:00:00'),
+                'dateRetour' => new DateTime('2023-05-03 16:00:00'),
+                'livre' => $livre1,
+                'emprunteur' => $emprunteur1
+            ],
+            [
+                'dateEmprunt' => new DateTime('2023-01-03 17:00:00'),
+                'dateRetour' => new DateTime('2023-06-03 15:00:00'),
+                'livre' => $livre2,
+                'emprunteur' => $emprunteur2
+            ],
+            [
+                'dateEmprunt' => new DateTime('2023-02-03 16:00:00'),
+                'dateRetour' => new DateTime('2023-05-03 16:00:00'),
+                'livre' => $livre3,
+                'emprunteur' => $emprunteur3
+            ]
+        ];
+
+        foreach ($datas as $data) {
+            $emprunt = new Emprunt();
+            $emprunt->setDateEmprunt($data['dateEmprunt']);
+            $emprunt->setDateRetour($data['dateRetour']);
+            $emprunt->setLivre($data['livre']);
+            $emprunt->setEmprunteur($data['emprunteur']);
+
+            $this->manager->persist($emprunt);
         }
         $this->manager->flush();
     }
