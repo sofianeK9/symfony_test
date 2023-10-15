@@ -77,6 +77,15 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $this->manager->persist($auteur);
         }
         $this->manager->flush();
+
+        for ($i = 0; $i < 200; $i++) {
+            $auteur = new Auteur();
+            $auteur->setNom($this->faker->lastName());
+            $auteur->setPrenom($this->faker->firstName());
+
+            $this->manager->persist($auteur);
+        }
+        $this->manager->flush();
     }
 
     public function loadGenres(): void
@@ -228,6 +237,27 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $this->manager->persist($livre);
         }
         $this->manager->flush();
+
+        for ($i = 0; $i < 800; $i++) {
+            $livre = new Livre();
+            $word = random_int(1, 3);
+            $livre->setTitre($this->faker->sentence($word));
+            $livre->setAnneeEdition($this->faker->optional(0.9)->year());
+            $livre->setNombrePages($this->faker->numberBetween(100, 1200));
+            $livre->setCodeIsbn($this->faker->isbn13());
+
+            $auteur = $this->faker->randomElement($auteurs);
+            $livre->setAuteur($auteur);
+
+            $nbGenres = random_int(1, 3);
+            $shortList = $this->faker->randomElements($genres, $nbGenres);
+
+            foreach ($shortList as $genre) {
+                $livre->addGenre($genre);
+            }
+            $this->manager->persist($livre);
+        }
+        $this->manager->flush();
     }
 
     public function loadEmprunteurs(): void
@@ -289,6 +319,26 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $emprunteur->setUser($user);
 
             $this->manager->persist($emprunteur);
+
+            for ($i = 0; $i < 100; $i++) {
+                $user = new User();
+                $user->setEmail($this->faker->email());
+                $password = $this->hasher->hashPassword($user, '123');
+                $user->setPassword($password);
+                $user->setRoles(['ROLE_USER']);
+                $user->setEnabled($this->faker->boolean());
+
+                $this->manager->persist($user);
+
+                $emprunteur = new Emprunteur();
+                $emprunteur->setNom($this->faker->lastName());
+                $emprunteur->setPrenom($this->faker->firstName());
+                $emprunteur->setTel($this->faker->mobileNumber());
+
+                $emprunteur->setUser($user);
+
+                $this->manager->persist($emprunteur);
+            }
         }
         $this->manager->flush();
     }
