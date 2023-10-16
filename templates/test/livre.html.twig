@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+
+<h1> la liste complète de tous les livres, triée par ordre alphabétique de titre </h1>
+
+{% for livresAll in livresAll %}
+
+<p> id : {{livresAll.id}}, titre : {{livresAll.titre}}</p>
+
+{% endfor %}
+ <h1> l'unique livre dont l'id est `1` </h1>
+
+ <p> {{livre1.id}}  {{livre1.titre}} {{livre1.anneeEdition}} {{livre1.nombrePages}} {{livre1.auteur.id}} {{livre1.auteur.nom}} {{livre1.auteur.prenom}} </p>
+
+ <h1> - la liste des livres dont le titre contient le mot clé `lorem`, triée par ordre alphabétique de titre</h1>
+
+ {% for findTitle in findTitle %}
+
+ <p> {{findTitle.titre}} <p/>
+
+{% endfor %}
+
+<h1> - la liste des livres dont l'id de l'auteur est `2`, triée par ordre alphabétique de titre </h1>
+
+{% for user2Books in user2Books %}
+
+<p> titre : {{user2Books.titre}}</p>
+
+{% endfor %}
+
+<h1> - la liste des livres dont le genre contient le mot clé `roman`, triée par ordre alphabétique de titre </h1>
+
+{% for findGenre in findGenre %}
+
+<p> titre : {{findGenre.titre}}</p>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<h1> {{ title }}</h1>
+
+<h2>Liste des utilisateurs triés par ordre d'email</h2>
+{% for users in users%}
+<p>id : {{users.id}}</p>
+<p>{{users.email}}</p>
+{% endfor %}
+
+<h2>User dont l'id est 1</h2>
+
+<p>{{user1.email}}</p>
+
+<h2>l'unique utilisateur dont l'email est exactement `foo.foo@example.com`</h2>
+
+<p> id : {{email.id}} </p>
+
+<h2> la liste des utilisateurs dont l'attribut `roles` contient le mot clé `ROLE_USER`, triée par ordre alphabétique d'email </h2>
+
+ {% for userRoles in userRoles %}
+ 
+<p> {{userRoles.id}} </p>
+<p> {{userRoles.email}} </p>
+
+{% endfor %}
+
+<h2> la liste des utilisateurs inactifs (c-à-d dont l'attribut `enabled` est égal à `false`), triée par ordre alphabétique d'email </h2>
+
+{% for inactifUser in inactifUser %}
+
+<p>  id : {{inactifUser.id}} </p>
+<p>{{inactifUser.email}} </p>
+{% endfor %}
+
+{% endblock %}
