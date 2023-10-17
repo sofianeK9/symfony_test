@@ -21,28 +21,37 @@ class EmprunteurRepository extends ServiceEntityRepository
         parent::__construct($registry, Emprunteur::class);
     }
 
-//    /**
-//     * @return Emprunteur[] Returns an array of Emprunteur objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Emprunteur[] Returns an array of Emprunteur objects
+     */
+    public function findAllEmprunteur(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.nom IS NOT NULL')
+            ->orderBy('e.nom', 'ASC')
+            ->orderBy('e.prenom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Emprunteur
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findWordFoo($word): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.nom LIKE :word')
+            ->orWhere('e.prenom LIKE :word')
+            ->orderBy('e.nom, e.prenom', 'ASC')
+            ->setParameter('word', "%$word%")
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findTel($tel): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.tel LIKE :tel')
+            ->orderBy('e.nom, e.prenom', 'ASC')
+            ->setParameter('tel', "%$tel%")
+            ->getQuery()
+            ->getResult();
+    }
 }

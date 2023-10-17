@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<h1> {{ title }}</h1>
+
+<h1> - la liste complète des emprunteurs, triée par ordre alphabétique de nom et prénom </h1>
+
+{% for findAllEmprunteurs in findAllEmprunteurs%}
+
+<p> {{findAllEmprunteurs.nom}} {{findAllEmprunteurs.prenom}}</p>
+
+{% endfor %}
+
+<h1> - l'unique emprunteur dont l'id est `3`</h1>
+<p> {{emprunteur3.nom}} {{emprunteur3.prenom}} </p>
+
+<h1> - l'unique emprunteur qui est relié au user dont l'id est `3` </h1>
+
+<p> id {{user3.emprunteur.id}} {{user3.emprunteur.nom}} {{user3.emprunteur.prenom}}  </p>
+
+<h1> - la liste des emprunteurs dont le nom ou le prénom contient le mot clé `foo`, triée par ordre alphabétique de nom et prénom </h1>
+
+{% for findFoo in findFoo %}
+
+<p> {{findFoo.nom}} {{findFoo.prenom}}</p>
+
+{% endfor %}
+
+<h1> - la liste des emprunteurs dont le téléphone contient le mot clé `1234`, triée par ordre alphabétique de nom et prénom </h1>
+
+{% for findTel in findTel %}
+
+<p> id : {{findTel.id}} {{findTel.nom}} {{findTel.prenom}}</p>
+
+{% endfor %}
+
+<h1> - la liste des emprunteurs dont la date de création est antérieure au 01/03/2021 exclu (c-à-d strictement plus petit), triée par ordre alphabétique de nom et prénom </h1>
+
+
+{% endblock %}
