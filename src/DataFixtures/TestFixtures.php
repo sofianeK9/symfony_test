@@ -388,6 +388,25 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $emprunt->setEmprunteur($data['emprunteur']);
 
             $this->manager->persist($emprunt);
+
+            for ($i = 0; $i < 200; $i++) {
+                $emprunt = new Emprunt();
+    
+                $dateEmprunt = $this->faker->dateTimeBetween(' -1 year', '-6 months');
+                $emprunt->setDateEmprunt($dateEmprunt);
+    
+                $dateRetour = $this->faker->optional(0.5)->dateTimeBetween('-6 months', 'now');
+                $emprunt->setDateRetour($dateRetour);
+    
+                $livre = $this->faker->randomElement($livres);
+                $emprunt->setLivre($livre);
+    
+    
+                $emprunteur = $this->faker->randomElement($emprunteurs);
+                $emprunt->setEmprunteur($emprunteur);
+    
+                $this->manager->persist($emprunt);
+            }
         }
         $this->manager->flush();
     }

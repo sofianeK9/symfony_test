@@ -7,6 +7,8 @@ use App\Entity\Livre;
 use App\Entity\Auteur;
 use App\Entity\Genre;
 use App\Entity\Emprunteur;
+use App\Entity\Emprunt;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -110,7 +112,7 @@ class TestController extends AbstractController
 
         $livre123 = $livreRepository->find(123);
 
-        if($livre123) {
+        if ($livre123) {
             $em->remove($livre123);
             $em->flush();
         }
@@ -126,7 +128,7 @@ class TestController extends AbstractController
     }
 
     #[Route('/emprunteur', name: 'emprunteur')]
-    public function emprunteur(ManagerRegistry $doctrine) : Response 
+    public function emprunteur(ManagerRegistry $doctrine): Response
     {
         $em = $doctrine->getManager();
         $emprunteurRepository = $em->getRepository(Emprunteur::class);
@@ -141,7 +143,7 @@ class TestController extends AbstractController
 
         // - l'unique emprunteur qui est relié au user dont l'id est `3`
 
-       $user3 = $userRepository->find(3);
+        $user3 = $userRepository->find(3);
 
         // - la liste des emprunteurs dont le nom ou le prénom contient le mot clé `foo`, triée par ordre alphabétique de nom et prénom
 
@@ -158,6 +160,86 @@ class TestController extends AbstractController
             'user3' => $user3,
             'findFoo' => $findFooWord,
             'findTel' => $findNumber,
+        ]);
+    }
+
+    #[Route('/emprunt', name: 'emprunt')]
+    public function emprunt(ManagerRegistry $doctrine): Response
+    {
+        $em = $doctrine->getManager();
+        $empruntRepository = $em->getRepository(Emprunt::class);
+        $livreRepository = $em->getRepository(Livre::class);
+        $emprunteurRepository = $em->getRepository(Emprunteur::class);
+
+        // - la liste des 10 derniers emprunts au niveau chronologique, triée par ordre **décroissant** de date d'emprunt (le plus récent en premier)
+
+        $value = 10;
+        $findLastEmprunt = $empruntRepository->findTenLastEmprunt($value);
+
+        // - la liste des emprunts de l'emprunteur dont l'id est `2`, triée par ordre **croissant** de date d'emprunt (le plus ancien en premier)
+
+        $emprunt2U = $empruntRepository->find(2);
+
+        $emprunt2 = $empruntRepository->findEmprunt2($emprunt2U);
+
+
+        // - la liste des emprunts du livre dont l'id est `3`, triée par ordre **décroissant** de date d'emprunt (le plus récent en premier)
+
+        $emprunt3U = $empruntRepository->find(3);
+        $emprunt3 = $empruntRepository->findEmprunt3($emprunt3U);
+
+        // - la liste des emprunts qui n'ont pas encore été retournés (c-à-d dont la date de retour est nulle), triée par ordre **croissant** de date d'emprunt (le plus ancien en premier)
+
+        $empruntList = $empruntRepository->findEmpruntNull();
+
+
+        // - l'unique emprunt relié au livre dont l'id est `3`
+
+       
+        $livre3 = $empruntRepository->EmpruntLivre3(3);
+
+        // requete de création
+
+        $newEmprunteur = $emprunteurRepository->find(1);
+        $newBook = $livreRepository->find(1);
+
+
+        $newEmprunt = new Emprunt();
+        $newEmprunt->setDateEmprunt(new DateTime('01/12/2020 16:00:00'));
+        $newEmprunt->setDateRetour(null);
+        $newEmprunt->setEmprunteur($newEmprunteur);
+        $newEmprunt->setLivre($newBook);
+
+        $em->persist($newEmprunt);
+        $em->flush();
+
+
+        // requete de mise à jour 
+
+        $majEmprunt = $empruntRepository->find(3);
+        $majEmprunt->setDateRetour(new DateTime('01/05/2020 10:00:00'));
+
+        $em->persist($majEmprunt);
+        $em->flush();   
+
+
+        // requete de suppression
+
+        $id42 = $empruntRepository->find(42);
+
+        if($id42) {
+            $em->remove($id42);
+            $em->flush();
+        }
+
+
+        return $this->render('test/emprunt.html.twig', [
+            'title' => 'test emprunt',
+            'lastEmprunt' => $findLastEmprunt,
+            'emprunt2' => $emprunt2,
+            'emprunt3' => $emprunt3,
+            'empruntList' => $empruntList,
+            'livre3' => $livre3,
         ]);
     }
 }

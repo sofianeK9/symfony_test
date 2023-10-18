@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Emprunt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\AST\OrderByItem;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,28 +22,58 @@ class EmpruntRepository extends ServiceEntityRepository
         parent::__construct($registry, Emprunt::class);
     }
 
-//    /**
-//     * @return Emprunt[] Returns an array of Emprunt objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Emprunt[] Returns an array of Emprunt objects
+     */
+    public function findTenLastEmprunt($value): array
+    {
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.dateEmprunt', 'DESC')
+            ->setMaxResults($value)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Emprunt
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findEmprunt2($value): array
+    {
+        return $this->createQueryBuilder('e')
+        ->select('e')
+        ->where('e.emprunteur = :value')
+        ->setParameter('value', $value)
+        ->orderBy('e.dateEmprunt', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function findEmprunt3($value): array
+    {
+        return $this->createQueryBuilder('e')
+        ->select('e')
+        ->where('e.emprunteur = :value')
+        ->setParameter('value', $value)
+        ->orderBy('e.dateEmprunt', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function findEmpruntNull(): array
+    {
+        return $this->createQueryBuilder('e')
+        ->where('e.dateRetour IS NULL')
+        ->orderBy('e.dateEmprunt', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function EmpruntLivre3($value): array
+    {
+        return $this->createQueryBuilder('e')
+        ->select('e')
+        ->where('e.livre = :value')
+        ->setParameter('value', $value)
+        ->getQuery()
+        ->getResult();
+    }
+
+
 }

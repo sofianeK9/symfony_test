@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+
+
+<h1> la liste des 10 derniers emprunts au niveau chronologique, triée par ordre **décroissant** de date d'emprunt (le plus récent en premier)</h1>
+
+{% for lastEmprunt in lastEmprunt %}
+
+<p> id : {{lastEmprunt.id}} </p>
+
+{% endfor %}
+
+<h1> - la liste des emprunts de l'emprunteur dont l'id est `2`, triée par ordre **croissant** de date d'emprunt (le plus ancien en premier) </h1>
+
+{% for emprunt2 in emprunt2 %}
+
+<p> {{emprunt2.livre.id}} </p>
+
+{% endfor %}
+
+<h1> - la liste des emprunts du livre dont l'id est `3`, triée par ordre **décroissant** de date d'emprunt (le plus récent en premier) </h1>
+{% for emprunt3 in emprunt3 %}
+
+<p> {{emprunt3.id}} </p>
+
+{% endfor %}
+
+<h1> - la liste des emprunts qui n'ont pas encore été retournés (c-à-d dont la date de retour est nulle), triée par ordre **croissant** de date d'emprunt (le plus ancien en premier) <h1>
+
+{% for empruntList in empruntList %} 
+
+<p> id : {{empruntList.id}}</p>
+
+
+{% endfor %}
+
+<h1> - l'unique emprunt relié au livre dont l'id est `3` </h1>
+
+{% for livre3 in livre3%}
+
+<p> id emprunt : {{livre3.id}}  {{livre3.dateEmprunt|date('d/m/y')}} {{livre3.dateRetour|date('d/m/y')}}</p>
+
+{% endfor %}
+{% endblock %}
